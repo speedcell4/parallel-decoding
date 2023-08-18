@@ -1,18 +1,19 @@
+import typing as t
+
+import datasets
 import torch
 from torch.utils.data import Dataset
-import datasets
 
-from src.utils.utils import retrieve_map_languages_flores, clean_text
-import typing as t
+from src.utils.utils import retrieve_map_languages_flores
 
 
 class Flores(Dataset):
     def __init__(
-        self,
-        src_lan: str = "ro",
-        tgt_lan: str = "en",
-        hugginface_tokenizer=None,
-        split: str = None,
+            self,
+            src_lan: str = "ro",
+            tgt_lan: str = "en",
+            hugginface_tokenizer=None,
+            split: str = None,
     ):
         self.name = "flores"
         self.max_length = 511
@@ -33,7 +34,6 @@ class Flores(Dataset):
             self.tokenizer = hugginface_tokenizer
 
     def collate_fn(self, batch):
-
         batch_source = [b[0] for b in batch]
         batch_target = [b[1] for b in batch]
 

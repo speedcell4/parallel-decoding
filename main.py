@@ -1,9 +1,7 @@
 import hydra
-from transformers import (
-    AutoModelForSeq2SeqLM,
-    AutoTokenizer,
-    MBartForConditionalGeneration,
-)
+from transformers import AutoModelForSeq2SeqLM
+from transformers import AutoTokenizer
+from transformers import MBartForConditionalGeneration
 
 from src.bench import MTBenchmarker
 from src.dataset.flores_dataset import Flores
@@ -15,8 +13,8 @@ from src.ipi.decoders.beam_search import BeamSearchDecoder
 from src.ipi.decoders.gs_jacobi import GSJacobiDecoder
 from src.ipi.decoders.hybrid_jacobi import HybridJacobiDecoder
 from src.ipi.decoders.jacobi import JacobiDecoder
-from src.ipi.initializer import Initializer
 from src.ipi.decoders.mt_decoding import MTDecoder
+from src.ipi.initializer import Initializer
 from src.utils.beam_search import BeamSearcher
 from src.utils.utils import retrieve_samples
 

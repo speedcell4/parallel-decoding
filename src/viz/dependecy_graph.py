@@ -22,12 +22,12 @@ class DecodingDependencyGraph(object):
             self.starting_index = 1
 
     def insert_one_element(
-        self, current_tensor, gold_tensor, index=None, output_probs=None
+            self, current_tensor, gold_tensor, index=None, output_probs=None
     ):
         self.init_matrix.append(
             (
-                current_tensor[:, self.starting_index :]
-                == gold_tensor[:, self.starting_index :]
+                    current_tensor[:, self.starting_index:]
+                    == gold_tensor[:, self.starting_index:]
             )
         )
         if output_probs is not None:
@@ -47,17 +47,17 @@ class DecodingDependencyGraph(object):
             labels = [
                 f"{i}:{id}"
                 for i, id in zip(
-                    labels[self.starting_index - 1 :],
-                    sample_target[self.starting_index - 1 :],
+                    labels[self.starting_index - 1:],
+                    sample_target[self.starting_index - 1:],
                 )
             ]
         elif method == "basic":
-            labels = [f"{i}" for i in sample_target[self.starting_index - 1 :].tolist()]
+            labels = [f"{i}" for i in sample_target[self.starting_index - 1:].tolist()]
 
         return labels
 
     def pretty_print(
-        self, sample_index: int, sentence_id: str, method="basic", x_remap="text"
+            self, sample_index: int, sentence_id: str, method="basic", x_remap="text"
     ):
         labels = self._create_labels(sample_index=sample_index, method=method)
         iteration_matrix, probability_matrix = self.finalize_matrices()
@@ -109,7 +109,7 @@ class DecodingDependencyGraph(object):
         fig.show()
 
     def plot_confusion_matrix(
-        self, cm, target_names, title="Confusion matrix", cmap=None, normalize=True
+            self, cm, target_names, title="Confusion matrix", cmap=None, normalize=True
     ):
         """
         given a sklearn confusion matrix (cm), make a nice plot

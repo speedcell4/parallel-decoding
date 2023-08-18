@@ -6,18 +6,16 @@ import torch
 from datasets.utils.download_manager import DownloadManager
 from torch.utils.data.dataset import Dataset
 
-from src.utils.utils import clean_text
-
 
 class Iwslt(Dataset):
     def __init__(
-        self,
-        version: str = "17",
-        src_lan: str = "en",
-        tgt_lan: str = "ro",
-        data_dir: str = None,
-        hugginface_tokenizer=None,
-        split: str = None,
+            self,
+            version: str = "17",
+            src_lan: str = "en",
+            tgt_lan: str = "ro",
+            data_dir: str = None,
+            hugginface_tokenizer=None,
+            split: str = None,
     ):
         self.version = version
         self.src_lan = src_lan
@@ -49,9 +47,9 @@ class Iwslt(Dataset):
             self.tokenizer = hugginface_tokenizer
 
     def load_dataset(
-        self,
-        splitted_generators: t.List[datasets.SplitGenerator],
-        split: str,
+            self,
+            splitted_generators: t.List[datasets.SplitGenerator],
+            split: str,
     ) -> t.List[t.Dict]:
         splitted_generators = self.concat_dataset(splitted_generators, split)
 
@@ -64,12 +62,12 @@ class Iwslt(Dataset):
 
     @staticmethod
     def concat_dataset(
-        splitted_generators: t.List[datasets.SplitGenerator],
-        split: str,
+            splitted_generators: t.List[datasets.SplitGenerator],
+            split: str,
     ) -> datasets.SplitGenerator:
         split2ix = {"train": 0, "test": 1, "validation": 2}
         assert (
-            split in split2ix
+                split in split2ix
         ), "Iwslt: split must be either train or test on validation"
         if split is not None:
             return splitted_generators[split2ix[split]]
@@ -148,7 +146,7 @@ class Iwslt(Dataset):
         ]
 
     def _generate_examples(
-        self, source_files: t.List[str], target_files: t.List[str]
+            self, source_files: t.List[str], target_files: t.List[str]
     ) -> t.List[t.Dict]:
         """Yields examples."""
         for source_file, target_file in zip(source_files, target_files):

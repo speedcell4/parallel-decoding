@@ -1,4 +1,5 @@
-from typing import Dict, Optional
+from typing import Dict
+from typing import Optional
 
 import torch
 from transformers import MBartForConditionalGeneration
@@ -8,6 +9,7 @@ from src.utils.utils import get_logits_preprocessor
 
 PREC_GOLD_AUTOREGRESSIVE: Dict[str, Optional[torch.Tensor]] = {"input_ids": None, "gold": None}
 PREC_LOGISTS_PREPROCESSOR: Dict[str, Optional[torch.Tensor]] = {"input_ids": None, "logists": None}
+
 
 class MTDecoder:
     def __init__(
@@ -54,7 +56,8 @@ class MTDecoder:
 
         global PREC_GOLD_AUTOREGRESSIVE
 
-        if PREC_GOLD_AUTOREGRESSIVE['input_ids'] is None or not torch.equal(input_ids, PREC_GOLD_AUTOREGRESSIVE['input_ids']):
+        if PREC_GOLD_AUTOREGRESSIVE['input_ids'] is None or not torch.equal(input_ids,
+                                                                            PREC_GOLD_AUTOREGRESSIVE['input_ids']):
             if self.is_mbart:
                 with self.tokenizer.as_target_tokenizer():
                     try:
@@ -87,7 +90,8 @@ class MTDecoder:
         global PREC_LOGISTS_PREPROCESSOR
 
         if self.use_logits_preprocessor:
-            if PREC_LOGISTS_PREPROCESSOR['input_ids'] is None or not torch.equal(input_ids, PREC_LOGISTS_PREPROCESSOR['input_ids']):
+            if PREC_LOGISTS_PREPROCESSOR['input_ids'] is None or not torch.equal(input_ids, PREC_LOGISTS_PREPROCESSOR[
+                'input_ids']):
                 logits_preprocessor = get_logits_preprocessor(
                     model=self.model,
                     input_ids=input_ids,
@@ -118,13 +122,13 @@ class MTDecoder:
 
 
 def generate_target(
-    tokenizer,
-    model,
-    input_ids: torch.Tensor,
-    attention_mask: torch.Tensor,
-    is_mbart: bool,
-    decoding_method: str = "greedy",
-    remove_padding: bool = False,
+        tokenizer,
+        model,
+        input_ids: torch.Tensor,
+        attention_mask: torch.Tensor,
+        is_mbart: bool,
+        decoding_method: str = "greedy",
+        remove_padding: bool = False,
 ):
     if decoding_method == "greedy":
         if is_mbart:
@@ -151,4 +155,3 @@ def generate_target(
         ]
 
     return gold_output
-

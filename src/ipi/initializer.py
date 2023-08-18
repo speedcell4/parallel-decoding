@@ -1,22 +1,20 @@
 import torch
 from nltk.tokenize.toktok import ToktokTokenizer
 from nltk.tokenize.treebank import TreebankWordDetokenizer
-from transformers import (
-    M2M100Tokenizer,
-    MarianTokenizer,
-    MBart50Tokenizer,
-    MBartTokenizer,
-)
+from transformers import M2M100Tokenizer
+from transformers import MBart50Tokenizer
+from transformers import MBartTokenizer
+from transformers import MarianTokenizer
 
 
 class Initializer(object):
     def __init__(
-        self,
-        src_len,
-        tgt_len,
-        hugginface_tokenizer,
-        use_init=True,
-        device="cpu",
+            self,
+            src_len,
+            tgt_len,
+            hugginface_tokenizer,
+            use_init=True,
+            device="cpu",
     ):
 
         self.src_len = src_len
@@ -42,7 +40,7 @@ class Initializer(object):
                 bos = torch.tensor([self.pad_token_id]).unsqueeze(0)
                 tgt_tensor = bos
             elif isinstance(self.tokenizer, MBart50Tokenizer) or isinstance(
-                self.tokenizer, M2M100Tokenizer
+                    self.tokenizer, M2M100Tokenizer
             ):
                 bos = torch.tensor([self.tokenizer.eos_token_id]).unsqueeze(0)
                 tgt_tensor = self.tokenizer(

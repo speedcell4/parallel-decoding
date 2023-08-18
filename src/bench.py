@@ -6,12 +6,14 @@ import time
 
 import torch
 from tabulate import tabulate
-from torch.utils.data import DataLoader, Dataset
+from torch.utils.data import DataLoader
+from torch.utils.data import Dataset
 from tqdm import tqdm
 
 from src.utils import utils
 from src.utils.bench_scorer import Scorer
-from src.utils.utils import retrieve_model_name, check_zero_division
+from src.utils.utils import check_zero_division
+from src.utils.utils import retrieve_model_name
 
 logging.basicConfig(
     format="%(asctime)s | %(levelname)s | %(name)s |  [%(filename)s:%(lineno)d] %(message)s",
@@ -83,15 +85,15 @@ class MTBenchmarker(object):
     def _compute_info_table(self, best_alg, i, grid):
         # Table for the test info
         info_table = tabulate([
-                [
-                    self.decoders[0].model_name,
-                    self.dataset.name,
-                    self.device,
-                    best_alg,
-                    i,
-                    f"{self.src_lang}-{self.tgt_lang}",
-                ]
-            ],
+            [
+                self.decoders[0].model_name,
+                self.dataset.name,
+                self.device,
+                best_alg,
+                i,
+                f"{self.src_lang}-{self.tgt_lang}",
+            ]
+        ],
             headers=[
                 "Model",
                 "Dataset",
@@ -119,8 +121,10 @@ class MTBenchmarker(object):
             tests_header = ["Metrics"] + [name for name in scorers]
 
             comp_scorer = scorers.get(self.compare_to)
-            time_speedup = [check_zero_division(comp_scorer.tot_mean_time, scorer.tot_mean_time) for scorer in scorers.values()]
-            iter_speedup = [check_zero_division(comp_scorer.tot_mean_iter, scorer.tot_mean_iter) for scorer in scorers.values()]
+            time_speedup = [check_zero_division(comp_scorer.tot_mean_time, scorer.tot_mean_time) for scorer in
+                            scorers.values()]
+            iter_speedup = [check_zero_division(comp_scorer.tot_mean_iter, scorer.tot_mean_iter) for scorer in
+                            scorers.values()]
 
             times_table = tabulate(
                 [

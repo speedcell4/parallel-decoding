@@ -26,9 +26,9 @@ class BleuEvaluator(object):
 
 class BleuCalculator:
     def __init__(
-        self,
-        dataset,
-        result_dir,
+            self,
+            dataset,
+            result_dir,
     ):
         self.dataset = dataset
         self.result_dir = result_dir

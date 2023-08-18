@@ -4,8 +4,6 @@ import datasets
 import torch
 from torch.utils.data import Dataset
 
-from src.utils.utils import clean_text
-
 
 class Wmt(Dataset):
     """
@@ -23,12 +21,12 @@ class Wmt(Dataset):
     """
 
     def __init__(
-        self,
-        version: str = "16",
-        src_lan: str = "ro",
-        tgt_lan: str = "en",
-        hugginface_tokenizer=None,
-        split: str = None,
+            self,
+            version: str = "16",
+            src_lan: str = "ro",
+            tgt_lan: str = "en",
+            hugginface_tokenizer=None,
+            split: str = None,
     ):
         self.src_lan = src_lan
         self.tgt_lan = tgt_lan
@@ -36,9 +34,9 @@ class Wmt(Dataset):
         self.max_length = 511
 
         if src_lan == "en":
-            source2target = "{}-{}".format(self.tgt_lan, self.src_lan)
+            source2target = f"{self.tgt_lan}-{self.src_lan}"
         else:
-            source2target = "{}-{}".format(self.src_lan, self.tgt_lan)
+            source2target = f"{self.src_lan}-{self.tgt_lan}"
 
         if version == "19" and "test" in split:
             split = "validation"

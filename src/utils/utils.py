@@ -3,11 +3,11 @@ import os
 import random
 import re
 
+import datasets
 import numpy as np
 import pandas as pd
 import torch
-from torch.nn.modules import linear
-import datasets
+
 
 def makedirs(path):
     if path.endswith((".tsv", ".csv", ".txt")):
@@ -16,8 +16,10 @@ def makedirs(path):
     if not os.path.exists(path):
         os.makedirs(path)
 
+
 def check_zero_division(a, b):
     return "na" if b == 0 else round(a / b, 3)
+
 
 def get_logits_preprocessor(model, input_ids, eos_token_id):
     logits_preprocessor = model._get_logits_processor(
@@ -42,7 +44,6 @@ def get_logits_preprocessor(model, input_ids, eos_token_id):
         renormalize_logits=None
     )
     return logits_preprocessor
-
 
 
 def retrieve_model_name(model_name):
@@ -254,6 +255,7 @@ def retrieve_map_languages_flores(lan):
 
     return lang_map[lan]
 
+
 def read_csv(path_csv):
     csv_reader = pd.read_csv(path_csv, sep="\t", header=0)
     return csv_reader["times"].tolist()
@@ -282,7 +284,8 @@ def retrieve_samples(path, dataset):
                     trans = read_csv(os.path.join(root, filename))
                     decoder2file[folder]['trans'].extend(trans)
 
-    diff_times = np.array([auto-aw for auto, aw in zip(decoder2file['autoregressive']['time'], decoder2file['aw_jacobi']['time'])])
+    diff_times = np.array(
+        [auto - aw for auto, aw in zip(decoder2file['autoregressive']['time'], decoder2file['aw_jacobi']['time'])])
     indices = diff_times.argsort()[::-1]
 
     for i in indices:
@@ -297,6 +300,7 @@ def retrieve_samples(path, dataset):
 
         input()
         continue
+
 
 def clean_text(text):
     return re.sub("[!\"#$%&'()*+,-./:;<=>?@[\\]^_`{|}~£−€¿]+", " ", text)
@@ -317,7 +321,6 @@ def read_wrong_beam_translations(path):
 
 
 def write_sentences(path, data):
-
     with open(path, 'w') as out_file:
         output = csv.writer(out_file, delimiter="\n")
         output.writerow(data)

@@ -1,6 +1,6 @@
-torch~=1.13.1
-transformers==4.19.2
-datasets==2.1.0
+torch~=2.0.0
+transformers~=4.31.0
+datasets~=2.14.4
 matplotlib>=3.5.2
 pytorch-lightning==1.6.3
 nltk>=3.7
@@ -15,3 +15,6 @@ plotly>=5.8.2
 sacremoses==0.0.49
 sentence-transformers
 kaleido==0.2.1
+numpy~=1.24.2
+pandas~=1.5.1
+tabulate~=0.9.0

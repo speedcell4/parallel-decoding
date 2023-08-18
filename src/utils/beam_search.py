@@ -1,16 +1,20 @@
 import csv
 import os
-
-import torch
 import time
+
+import numpy as np
+import torch
 from tabulate import tabulate
 from torch.utils.data import DataLoader
 from tqdm import tqdm
-from transformers import MBartForConditionalGeneration, M2M100ForConditionalGeneration
-import numpy as np
+from transformers import M2M100ForConditionalGeneration
+from transformers import MBartForConditionalGeneration
 
 from src.utils.bench_scorer import Scorer
-from src.utils.utils import makedirs, retrieve_model_name, write_sentences, get_logits_preprocessor
+from src.utils.utils import get_logits_preprocessor
+from src.utils.utils import makedirs
+from src.utils.utils import retrieve_model_name
+from src.utils.utils import write_sentences
 
 
 class BeamSearcher(object):
@@ -77,43 +81,42 @@ class BeamSearcher(object):
         return f"{model_name}/{self.dataset.name}/{lang}"
 
     def _beam_search(self, input_ids, attention_mask):
-      if self.is_mbart:
-        with self.tokenizer.as_target_tokenizer():
-            try:
-                lang_id = self.tokenizer.cur_lang_code_id
-            except:
-                lang_id = self.tokenizer.cur_lang_id
-        beam_output = self.model.generate(
-            **{"input_ids": input_ids, "attention_mask": attention_mask},
-            num_beams=self.num_beams,
-            early_stopping=self.early_stopping,
-            # no_repeat_ngram_size=self.no_repeat_ngram_size,
-            forced_bos_token_id=lang_id,
-            # do_sample=False,
-            # use_cache=True,
-        )
-      else:
-          beam_output = self.model.generate(
-              **{"input_ids": input_ids, "attention_mask": attention_mask},
-              num_beams=self.num_beams,
-              early_stopping=self.early_stopping,
-              # no_repeat_ngram_size=self.no_repeat_ngram_size,
-              # do_sample=False,
-              # use_cache=True,
-          )
+        if self.is_mbart:
+            with self.tokenizer.as_target_tokenizer():
+                try:
+                    lang_id = self.tokenizer.cur_lang_code_id
+                except:
+                    lang_id = self.tokenizer.cur_lang_id
+            beam_output = self.model.generate(
+                **{"input_ids": input_ids, "attention_mask": attention_mask},
+                num_beams=self.num_beams,
+                early_stopping=self.early_stopping,
+                # no_repeat_ngram_size=self.no_repeat_ngram_size,
+                forced_bos_token_id=lang_id,
+                # do_sample=False,
+                # use_cache=True,
+            )
+        else:
+            beam_output = self.model.generate(
+                **{"input_ids": input_ids, "attention_mask": attention_mask},
+                num_beams=self.num_beams,
+                early_stopping=self.early_stopping,
+                # no_repeat_ngram_size=self.no_repeat_ngram_size,
+                # do_sample=False,
+                # use_cache=True,
+            )
 
-      return beam_output
-
+        return beam_output
 
     def _bench_time(self, input_ids, attention_mask):
         sample_time = []
         for _ in range(1):
-          start = time.perf_counter()
-          self._synchronize()
-          beam_output = self._beam_search(input_ids, attention_mask)
-          self._synchronize()
-          end = time.perf_counter()
-          sample_time.append(end - start)
+            start = time.perf_counter()
+            self._synchronize()
+            beam_output = self._beam_search(input_ids, attention_mask)
+            self._synchronize()
+            end = time.perf_counter()
+            sample_time.append(end - start)
 
         sample_mean = np.average(sample_time)
         sample_variance = np.var(sample_time)
@@ -209,7 +212,8 @@ class BeamSearcher(object):
 
         # Table for the Time
         time_table = tabulate([
-            ['Time', beam_scorer.tot_mean_time, auto_scorer.tot_mean_time, (auto_scorer.tot_mean_time / beam_scorer.tot_mean_time)],
+            ['Time', beam_scorer.tot_mean_time, auto_scorer.tot_mean_time,
+             (auto_scorer.tot_mean_time / beam_scorer.tot_mean_time)],
             ['Iter', beam_scorer.tot_mean_iter, auto_scorer.tot_mean_iter, 1],
             ['Var', beam_scorer.tot_var_time, auto_scorer.tot_var_time, 1],
         ], headers=['Metrics', 'Beam', 'Auto', 'Speedup'], tablefmt='grid')
@@ -254,6 +258,3 @@ class BeamSearcher(object):
             return [(i, beam_score.score, translation_beam, translation_auto, tgt_text)]
         else:
             return []
-
-
-

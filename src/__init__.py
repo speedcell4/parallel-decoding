@@ -49,7 +49,6 @@ def load_envs(env_file: Optional[str] = None) -> None:
 # Load environment variables
 load_envs()
 
-
 if "PROJECT_ROOT" not in os.environ:
     try:
         PROJECT_ROOT = Path(

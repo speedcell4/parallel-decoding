@@ -1,7 +1,7 @@
 import torch
+from more_itertools import sliced
 
 from src.ipi.decoders.mt_decoding import MTDecoder
-from more_itertools import sliced
 
 
 class GSJacobiDecoder(MTDecoder):
@@ -16,7 +16,8 @@ class GSJacobiDecoder(MTDecoder):
 
     @torch.no_grad()
     def decode(
-        self, input_ids, attention_mask, target_len, gold_target, init_tensor=None, logits_preprocessor=None, *args, **kwargs
+            self, input_ids, attention_mask, target_len, gold_target, init_tensor=None, logits_preprocessor=None, *args,
+            **kwargs
     ):
         key_cache = 1
         if init_tensor is None:
@@ -50,7 +51,7 @@ class GSJacobiDecoder(MTDecoder):
 
         for blocco in blocks:
             max_len = blocco.shape[-1]
-            blocco_usr = init_tensor[:, base_value : base_value + max_len]
+            blocco_usr = init_tensor[:, base_value: base_value + max_len]
 
             for index in range(max_len):
                 old_blocco = blocco_usr.detach().clone()
@@ -82,24 +83,23 @@ class GSJacobiDecoder(MTDecoder):
                 max_value = torch.argmax(logits, dim=-1)
 
                 if logits_preprocessor is not None:
-                    logits_new = logits_preprocessor(init_tensor[:, :base_value + index +1], logits[:, 0, :])
+                    logits_new = logits_preprocessor(init_tensor[:, :base_value + index + 1], logits[:, 0, :])
                     max_value_new = torch.argmax(logits_new, dim=-1)
                     max_value[:, 0] = max_value_new
 
-
                 if (
-                    max_value.shape[-1]
-                    == init_tensor[
-                        :, base_value + index + 1 : base_value + max_len + 1
-                    ].shape[-1]
+                        max_value.shape[-1]
+                        == init_tensor[
+                           :, base_value + index + 1: base_value + max_len + 1
+                           ].shape[-1]
                 ):
                     init_tensor[
-                        :, base_value + index + 1 : base_value + max_len + 1
+                    :, base_value + index + 1: base_value + max_len + 1
                     ] = max_value[:, :]
                 else:
                     # If last block remove the last token after EOS
                     init_tensor[
-                        :, base_value + index + 1 : base_value + max_len + 1
+                    :, base_value + index + 1: base_value + max_len + 1
                     ] = max_value[:, :-1]
 
                 stop_condition, _ = self.stopping_criterion(old_blocco, blocco_usr)
@@ -131,7 +131,7 @@ class GSJacobiDecoder(MTDecoder):
         init_tensor = self.initialize(input_ids, gold_autoregressive)
         logits_preprocessor = self.generate_logits_preprocessor(input_ids)
 
-        return{
+        return {
             "init_tensor": init_tensor.clone(),
             "gold_target": gold_autoregressive,
             "target_len": gold_autoregressive.shape[-1],

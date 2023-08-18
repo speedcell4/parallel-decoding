@@ -45,19 +45,18 @@ class JacobiDecoder(MTDecoder):
 
         return gold_output
 
-
     @torch.no_grad()
     def decode(
-        self,
-        input_ids,
-        attention_mask,
-        target_len=None,
-        gold_target=None,
-        init_tensor=None,
-        compute_ddg: bool = False,
-        logits_preprocessor=None,
-        *args,
-        **kwargs
+            self,
+            input_ids,
+            attention_mask,
+            target_len=None,
+            gold_target=None,
+            init_tensor=None,
+            compute_ddg: bool = False,
+            logits_preprocessor=None,
+            *args,
+            **kwargs
     ):
         max_length = target_len
         str_index = 0
@@ -135,10 +134,10 @@ class JacobiDecoder(MTDecoder):
                     (total_res[:, : index + 1], init_tensor[:, :-1]), dim=1
                 )
             else:
-                init_tensor[:, index + 1 :] = max_index[:, index:-1]
+                init_tensor[:, index + 1:] = max_index[:, index:-1]
                 total_res = init_tensor
 
-                output_probs[:, index + 1 :] = max_value[:, index:-1]
+                output_probs[:, index + 1:] = max_value[:, index:-1]
 
             stop_condition, return_tensor = self.stopping_criterion(
                 old_init_tensor, total_res
@@ -156,7 +155,6 @@ class JacobiDecoder(MTDecoder):
             return return_tensor, index, ddg
 
         return return_tensor, index
-
 
     def initialize(self, init_transl):
         if self.initializer is not None:

@@ -45,7 +45,7 @@ decoder:
   gs_jaco_blocks: 3
   use_cache: True
   # Specify the decoders to use
-  decoders: ['autoregressive', 'jacobi', 'gs_jacobi', 'h_jacobi', 'beam_search']
+  decoders: [ 'autoregressive', 'jacobi', 'gs_jacobi', 'h_jacobi', 'beam_search' ]
   device: ${device}
 
 

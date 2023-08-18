@@ -1,29 +1,28 @@
+import argparse
 import functools
 import hashlib
 import json
 from pathlib import Path
 
-import argparse
 import datasets
 import numpy as np
 import plotly.express as px
 import torch.utils.data
-from datasets import load_from_disk, Dataset
-from transformers import (
-    AutoModelForSeq2SeqLM,
-    AutoTokenizer,
-    PreTrainedTokenizer,
-    PreTrainedModel,
-)
+from datasets import Dataset
+from datasets import load_from_disk
+from transformers import AutoModelForSeq2SeqLM
+from transformers import AutoTokenizer
+from transformers import PreTrainedModel
+from transformers import PreTrainedTokenizer
 
 from src import PROJECT_ROOT
 from src.ipi.decoders.jacobi import JacobiDecoder
+from src.ipi.decoders.mt_decoding import generate_target
 from src.ipi.initializer import Initializer
-from src.ipi.decoders.mt_decoding import MTDecoder, generate_target
 
 
 def add_iteration_matrix(
-    sample: dict, src_lang: str, tgt_lang: str, model, tokenizer, initializer, decoder
+        sample: dict, src_lang: str, tgt_lang: str, model, tokenizer, initializer, decoder
 ):
     source = sample["translation"][src_lang]
     target = sample["translation"][tgt_lang]
@@ -84,15 +83,15 @@ def add_iteration_matrix(
 
 
 def enrich_dataset(
-    run_info: dict,
-    device: str,
-    src_lang: str,
-    tgt_lang: str,
-    dataset_name: str,
-    dataset_key: str,
-    tokenizer: PreTrainedTokenizer,
-    model: PreTrainedModel,
-    force_recompute: bool = False,
+        run_info: dict,
+        device: str,
+        src_lang: str,
+        tgt_lang: str,
+        dataset_name: str,
+        dataset_key: str,
+        tokenizer: PreTrainedTokenizer,
+        model: PreTrainedModel,
+        force_recompute: bool = False,
 ) -> Dataset:
     # MarianMT
     run_dir: Path = run_info["run_dir"]
@@ -152,7 +151,7 @@ def enrich_dataset(
 
 
 def draw(sample: dict, tokenizer: PreTrainedTokenizer, starting_index: int):
-    labels = [f"{i}" for i in sample["gold_output"][starting_index - 1 :]]
+    labels = [f"{i}" for i in sample["gold_output"][starting_index - 1:]]
     iteration_matrix = torch.as_tensor(sample["iteration_matrix"])
     probability_matrix = torch.as_tensor(sample["probability_matrix"])
     iteration_matrix = iteration_matrix[:, :].int().numpy()
@@ -203,7 +202,6 @@ def draw(sample: dict, tokenizer: PreTrainedTokenizer, starting_index: int):
 
 if __name__ == "__main__":
 
-
     parser = argparse.ArgumentParser(description='Dependency Graph Visualizer (DDGviz)')
 
     parser.add_argument('--src', default="ro", help='src language')
@@ -221,7 +219,6 @@ if __name__ == "__main__":
     dataset_key: str = f"{src_lang}-{tgt_lang}"
     langs = {src_lang, tgt_lang}
     examples_to_print = args.examples
-
 
     if "en" in langs:
         dataset_key = (

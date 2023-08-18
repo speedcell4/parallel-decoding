@@ -2,16 +2,14 @@ import torch
 from datasets import load_dataset
 from torch.utils.data.dataset import Dataset
 
-from src.utils.utils import clean_text
-
 
 class Ittb(Dataset):
     def __init__(
-        self,
-        src_lan,
-        tgt_lan,
-        hugginface_tokenizer=None,
-        split: str = None,
+            self,
+            src_lan,
+            tgt_lan,
+            hugginface_tokenizer=None,
+            split: str = None,
     ):
         self.src_lan = src_lan
         self.tgt_lan = tgt_lan
@@ -19,10 +17,10 @@ class Ittb(Dataset):
         self.max_length = 511
 
         assert (
-            src_lan == "en" or src_lan == "hi"
+                src_lan == "en" or src_lan == "hi"
         ), "Ittb: src_lan must be either en or hi"
         assert (
-            tgt_lan == "en" or tgt_lan == "hi"
+                tgt_lan == "en" or tgt_lan == "hi"
         ), "Ittb: tgt_lan must be either en or hi"
         assert src_lan != tgt_lan, "Ittb: src_lan and tgt_lan cannot be the same"
 
@@ -32,7 +30,6 @@ class Ittb(Dataset):
             self.tokenizer = hugginface_tokenizer
 
     def collate_fn(self, batch):
-
         batch_source = [b[0] for b in batch]
         batch_target = [b[1] for b in batch]
 

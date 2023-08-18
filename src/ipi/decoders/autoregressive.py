@@ -60,9 +60,9 @@ class AutoregressiveDecoder(MTDecoder):
             past_key_values = output.past_key_values
             logits = output.logits
             if logits_preprocessor is not None:
-                logits = logits_preprocessor(total_res, logits[:,-1,:])
+                logits = logits_preprocessor(total_res, logits[:, -1, :])
             else:
-                logits = logits[:,-1,:]
+                logits = logits[:, -1, :]
             max_value = torch.argmax(logits, dim=-1)
             last = max_value
             init_tensor = last.unsqueeze(0)
@@ -89,4 +89,3 @@ class AutoregressiveDecoder(MTDecoder):
             "init_tensor": init_tensor.clone(),
             "logits_preprocessor": logits_preprocessor
         }
-

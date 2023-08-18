@@ -1,4 +1,5 @@
-from src.utils.bleu_calculator import BleuEvaluator, BleuValues
+from src.utils.bleu_calculator import BleuEvaluator
+from src.utils.bleu_calculator import BleuValues
 
 
 class Scorer(object):
